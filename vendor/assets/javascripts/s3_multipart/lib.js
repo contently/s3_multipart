@@ -104,7 +104,7 @@ function S3MP(options) {
         // Notify the client that the upload has succeeded when we
         // get confirmation from the server
         if (obj.location) {
-          S3MP.onComplete(uploadObj);
+          S3MP.onComplete(uploadObj, obj.location);
         }
       });
 
@@ -310,7 +310,8 @@ S3MP.prototype.cancel = function(key) {
   i = _.indexOf(this.uploadList, uploadObj);
 
   this.uploadList.splice(i,i+1);
-  this.onCancel();
+  this.handler.clearProgressTimer(key);
+  this.onCancel(key);
 };
 
 // pause a given file upload
