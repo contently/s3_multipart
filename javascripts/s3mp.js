@@ -27,13 +27,12 @@ function S3MP(options) {
 
         i[key]++;
 
-        if (i[key] === num_parts) {
-          for (var j=0; j<pipes; j++) {
-            uploadObj.parts[j].activate();
-          }
-          S3MP.handler.startProgressTimer(key);
-          S3MP.onStart(uploadObj); // This probably needs to go somewhere else.
+        for (var j=0; j<pipes; j++) {
+          uploadObj.parts[j].activate();
         }
+        S3MP.handler.startProgressTimer(key);
+        S3MP.onStart(uploadObj); // This probably needs to go somewhere else.
+
       }
       return beginUpload;
     }(),
@@ -120,6 +119,7 @@ function S3MP(options) {
           });
 
           percent = done/size * 100;
+
           speed = done - last_upload_chunk[key];
           last_upload_chunk[key] = done;
 
@@ -178,6 +178,22 @@ S3MP.prototype.signPartRequests = function(id, object_name, upload_id, parts, cb
   body = JSON.stringify({ object_name     : object_name,
                           upload_id       : upload_id,
                           content_lengths : content_lengths
+                        });
+
+  xhr = this.createXhrRequest('PUT', url);
+  this.deliverRequest(xhr, body, cb);
+};
+
+S3MP.prototype.signPartRequest = function(id, object_name, upload_id, part, cb) {
+  var content_length, url, body, xhr;
+
+  content_length = part.size;
+
+  url = "/s3_multipart/uploads/"+id;
+  body = JSON.stringify({ object_name     : object_name,
+                          upload_id       : upload_id,
+                          content_length : content_length,
+                          part_number : part.num
                         });
 
   xhr = this.createXhrRequest('PUT', url);
