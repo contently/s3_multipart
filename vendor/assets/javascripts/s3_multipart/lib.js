@@ -127,8 +127,8 @@ function S3MP(options) {
           upload = S3MP.uploadList[key];
           size = upload.size;
           done = upload.uploaded;
-
-          _.each(upload.inprogress,function(val) {
+          
+          _.each(upload.inprogress.filter(function(num) { return num != undefined }), function(val) {
             done += val;
           });
 
