@@ -89,17 +89,17 @@ module S3Multipart
       end
 
       def s3
-        @s3 ||= AWS::S3.new
+        @s3 ||= Aws::S3::Resource.new(use_accelerate_endpoint: true)
       end
 
       def bucket
-        @s3.buckets[@bucket_name]
+        @s3.bucket(@bucket_name)
       end
 
-      def get_url url_str
+      def get_url(url_str)
         return '' if url_str.nil? || !url_str
-        s3_obj = bucket.objects[url_str]
-        s3_obj.url_for(:read, :expires => 60*60).to_s
+        s3_obj = bucket.object(url_str)
+        s3_obj.presigned_url(:get, :expires_in => 60*60).to_s
       end
     end
 
