@@ -316,6 +316,13 @@ S3MP.prototype.cancel = function(key) {
   var uploadObj, i;
 
   uploadObj = this._returnUploadObj(key);
+  
+  _.each(uploadObj.parts, function(part, key, list) {
+    if (part.status == "active") {
+      part.cancel();
+    }
+  });
+  
   i = _.indexOf(this.uploadList, uploadObj);
 
   this.uploadList.splice(i,i+1);
