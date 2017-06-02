@@ -330,6 +330,13 @@ S3MP.prototype.cancel = function(key) {
   var uploadObj, i;
 
   uploadObj = this._returnUploadObj(key);
+  
+  _.each(uploadObj.parts, function(part, key, list) {
+    if (part.status == "active") {
+      part.cancel();
+    }
+  });
+  
   i = _.indexOf(this.uploadList, uploadObj);
 
   this.uploadList.splice(i,i+1);
@@ -483,6 +490,11 @@ UploadPart.prototype.activate = function() {
 UploadPart.prototype.pause = function() {
   this.xhr.abort();
   this.status = "paused";
+};
+
+UploadPart.prototype.cancel = function() {
+  this.xhr.abort();
+  this.status = "cancelled";
 };
 
 return S3MP;

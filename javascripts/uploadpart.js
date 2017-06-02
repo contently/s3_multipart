@@ -21,7 +21,6 @@ function UploadPart(blob, key, upload) {
       upload.inprogress[key] = e.loaded;
     }
   }, 1000);
-
 };
 
 UploadPart.prototype.activate = function() {
@@ -40,4 +39,9 @@ UploadPart.prototype.activate = function() {
 UploadPart.prototype.pause = function() {
   this.xhr.abort();
   this.status = "paused";
+};
+
+UploadPart.prototype.cancel = function() {
+  this.xhr.abort();
+  this.status = "cancelled";
 };
