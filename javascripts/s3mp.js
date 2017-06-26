@@ -317,17 +317,19 @@ S3MP.prototype.cancel = function(key) {
 
   uploadObj = this._returnUploadObj(key);
   
-  _.each(uploadObj.parts, function(part, key, list) {
-    if (part.status == "active") {
-      part.cancel();
-    }
-  });
-  
-  i = _.indexOf(this.uploadList, uploadObj);
+  if (uploadObj) {
+    _.each(uploadObj.parts, function(part, key, list) {
+      if (part.status == "active") {
+        part.cancel();
+      }
+    });
+    
+    i = _.indexOf(this.uploadList, uploadObj);
 
-  this.uploadList.splice(i,i+1);
-  this.handler.clearProgressTimer(key);
-  this.onCancel(key);
+    this.uploadList.splice(i,i+1);
+    this.handler.clearProgressTimer(key);
+    this.onCancel(key);
+  }
 };
 
 // pause a given file upload
