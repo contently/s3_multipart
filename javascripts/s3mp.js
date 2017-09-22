@@ -223,15 +223,17 @@ S3MP.prototype.deliverRequest = function(xhr, body, cb) {
     if (xhr.status == 401) {
       return self.onError({
         name: "ServerResponse",
-        message: "The session has expired in the server."
+        error_message: "The session has expired in the server.",
+        error: "The session has expired in the server."
       });
     }
 
     response = JSON.parse(this.responseText);
-    if (response.error) {
+    if (response.error_message) {
       return self.onError({
         name: "ServerResponse",
-        message: response.error
+        error_message: response.error_message,
+        error: response.error
       });
     }
     cb(response);
