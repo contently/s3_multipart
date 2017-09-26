@@ -127,12 +127,18 @@ function S3MP(options) {
           upload = S3MP.uploadList[key];
           size = upload.size;
           done = upload.uploaded;
-          
+
           _.each(upload.inprogress.filter(function(num) { return num != undefined }), function(val) {
             done += val;
           });
 
-          percent = done/size * 100;
+          // If 50 or more upload parts, use percentage of completed parts as percent complete
+          // There is a bug with the done/size calculation and it can be off by ~+60% on large uploads
+          if (upload.num_parts >= 50) {
+            percent = (upload.num_parts - upload.parts.length) / upload.num_parts * 100;
+          } else {
+            percent = done / size * 100;
+          }
 
           speed = done - last_upload_chunk[key];
           last_upload_chunk[key] = done;
@@ -332,14 +338,14 @@ S3MP.prototype.cancel = function(key) {
   var uploadObj, i;
 
   uploadObj = this._returnUploadObj(key);
-  
+
   if (uploadObj) {
     _.each(uploadObj.parts, function(part, key, list) {
       if (part.status == "active") {
         part.cancel();
       }
     });
-    
+
     i = _.indexOf(this.uploadList, uploadObj);
 
     this.uploadList.splice(i,i+1);
