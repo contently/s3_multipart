@@ -110,8 +110,8 @@ function S3MP(options) {
     },
 
     // Called by progress_timer
-    onProgress: function(key, size, done, percent, speed) {
-      S3MP.onProgress(key, size, done, percent, speed);
+    onProgress: function(key, size, done, percent, speed, upload) {
+      S3MP.onProgress(key, size, done, percent, speed, upload);
     },
 
     startProgressTimer: function() {
@@ -143,7 +143,7 @@ function S3MP(options) {
           speed = done - last_upload_chunk[key];
           last_upload_chunk[key] = done;
 
-          upload.handler.onProgress(key, size, done, percent, speed);
+          upload.handler.onProgress(key, size, done, percent, speed, upload);
         }, 1000);
       };
       return fn;
