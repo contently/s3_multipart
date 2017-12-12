@@ -16,7 +16,7 @@ module S3Multipart
         }
 
         if options[:multiple]
-          file_field_options.merge({ multiple: 'multiple' })
+          file_field_options.merge!({ multiple: 'multiple' })
         end
 
         html = file_field_tag(options[:input_name], file_field_options)
