@@ -4,15 +4,22 @@ module S3Multipart
       def multipart_uploader_form(options = {})
         uploader_digest = S3Multipart::Uploader.serialize(options[:uploader])
         options[:input_class] = options[:input_class] || ''
-        html = file_field_tag(
-          options[:input_name],
+        options[:multiple] = options[:multiple] != false
+
+        file_field_options = {
           :class => options[:input_class],
-          :accept => options[:types].join(','),
-          :multiple => 'multiple',
-          :data => {
-            :uploader => uploader_digest,
-            :context => options[:context]
-        })
+          accept: options[:types].join(','),
+          data: {
+            uploader: uploader_digest,
+            context: options[:context]
+          }
+        }
+
+        if options[:multiple]
+          file_field_options.merge({ multiple: 'multiple' })
+        end
+
+        html = file_field_tag(options[:input_name], file_field_options)
 
         if !options[:only_file_input].nil? && options[:only_file_input]==false
           html << options[:html].html_safe

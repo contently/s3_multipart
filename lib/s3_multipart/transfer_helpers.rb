@@ -89,7 +89,14 @@ module S3Multipart
       end
 
       def s3
-        @s3 ||= Aws::S3::Resource.new(use_accelerate_endpoint: true)
+        @s3 ||= Aws::S3::Resource.new(
+          use_accelerate_endpoint: false,
+          region: Config.instance.region,
+          credentials: Aws::Credentials.new(
+            Config.instance.s3_access_key,
+            Config.instance.s3_secret_key
+          )
+        )
       end
 
       def bucket

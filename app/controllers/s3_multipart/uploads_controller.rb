@@ -11,7 +11,10 @@ module S3Multipart
       rescue => e
         logger.error "EXC: #{e.message}"
         logger.error e.backtrace
-        response = { error: t("s3_multipart.errors.create") }
+        response = {
+          error_message: t("s3_multipart.errors.create"),
+          error: e.message
+        }
       ensure
         render :json => response
       end
@@ -30,7 +33,10 @@ module S3Multipart
           response = Upload.sign_batch(params)
         rescue => e
           logger.error "EXC: #{e.message}"
-          response = {error: t("s3_multipart.errors.update")}
+          response = {
+            error_message: t("s3_multipart.errors.update"),
+            error: e.message
+          }
         ensure
           render :json => response
         end
@@ -41,7 +47,10 @@ module S3Multipart
           response = Upload.sign_part(params)
         rescue => e
           logger.error "EXC: #{e.message}"
-          response = {error: t("s3_multipart.errors.update")}
+          response = {
+            error_message: t("s3_multipart.errors.update"),
+            error: e.message
+          }
         ensure
           render :json => response
         end
@@ -55,7 +64,10 @@ module S3Multipart
           upload.execute_callback(:complete, session)
         rescue => e
           logger.error "EXC: #{e.message}"
-          response = {error: t("s3_multipart.errors.complete")}
+          response = {
+            error_message: t("s3_multipart.errors.complete"),
+            error: e.message
+          }
         ensure
           render :json => response
         end
