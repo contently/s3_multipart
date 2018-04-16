@@ -3,7 +3,7 @@ module S3Multipart
 
     def create
       begin
-        upload = Upload.create(params)
+        upload = Upload.create(upload_params)
         upload.execute_callback(:begin, session)
         response = upload.to_json
       rescue FileTypeError, FileSizeError => e
@@ -28,50 +28,53 @@ module S3Multipart
 
     private
 
-      def sign_batch
-        begin
-          response = Upload.sign_batch(params)
-        rescue => e
-          logger.error "EXC: #{e.message}"
-          response = {
-            error_message: t("s3_multipart.errors.update"),
-            error: e.message
-          }
-        ensure
-          render :json => response
-        end
+    def sign_batch
+      begin
+        response = Upload.sign_batch(upload_params)
+      rescue => e
+        logger.error "EXC: #{e.message}"
+        response = {
+          error_message: t("s3_multipart.errors.update"),
+          error: e.message
+        }
+      ensure
+        render :json => response
       end
+    end
 
-      def sign_part
-        begin
-          response = Upload.sign_part(params)
-        rescue => e
-          logger.error "EXC: #{e.message}"
-          response = {
-            error_message: t("s3_multipart.errors.update"),
-            error: e.message
-          }
-        ensure
-          render :json => response
-        end
+    def sign_part
+      begin
+        response = Upload.sign_part(upload_params)
+      rescue => e
+        logger.error "EXC: #{e.message}"
+        response = {
+          error_message: t("s3_multipart.errors.update"),
+          error: e.message
+        }
+      ensure
+        render :json => response
       end
+    end
 
-      def complete_upload
-        begin
-          response = Upload.complete(params)
-          upload = Upload.find_by_upload_id(params[:upload_id])
-          upload.update_attributes(location: response[:location])
-          upload.execute_callback(:complete, session)
-        rescue => e
-          logger.error "EXC: #{e.message}"
-          response = {
-            error_message: t("s3_multipart.errors.complete"),
-            error: e.message
-          }
-        ensure
-          render :json => response
-        end
+    def complete_upload
+      begin
+        response = Upload.complete(upload_params)
+        upload = Upload.find_by_upload_id(params[:upload_id])
+        upload.update_attributes(location: response[:location])
+        upload.execute_callback(:complete, session)
+      rescue => e
+        logger.error "EXC: #{e.message}"
+        response = {
+          error_message: t("s3_multipart.errors.complete"),
+          error: e.message
+        }
+      ensure
+        render :json => response
       end
+    end
 
+    def upload_params
+      params.to_unsafe_h
+    end
   end
 end
