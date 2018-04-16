@@ -3,7 +3,7 @@ module S3Multipart
 
     def create
       begin
-        upload = Upload.create(params)
+        upload = Upload.create(upload_params_to_unsafe_h)
         upload.execute_callback(:begin, session)
         response = upload.to_json
       rescue FileTypeError, FileSizeError => e
@@ -30,7 +30,7 @@ module S3Multipart
 
       def sign_batch
         begin
-          response = Upload.sign_batch(params)
+          response = Upload.sign_batch(upload_params_to_unsafe_h)
         rescue => e
           logger.error "EXC: #{e.message}"
           response = {
@@ -44,7 +44,7 @@ module S3Multipart
 
       def sign_part
         begin
-          response = Upload.sign_part(params)
+          response = Upload.sign_part(upload_params_to_unsafe_h)
         rescue => e
           logger.error "EXC: #{e.message}"
           response = {
@@ -58,7 +58,7 @@ module S3Multipart
 
       def complete_upload
         begin
-          response = Upload.complete(params)
+          response = Upload.complete(upload_params_to_unsafe_h)
           upload = Upload.find_by_upload_id(params[:upload_id])
           upload.update_attributes(location: response[:location])
           upload.execute_callback(:complete, session)
@@ -73,5 +73,8 @@ module S3Multipart
         end
       end
 
-  end
+      def upload_params_to_unsafe_h
+        params.to_unsafe_h
+      end
+    end
 end
