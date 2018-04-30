@@ -1,6 +1,6 @@
 {
   "name": "s3_multipart",
-  "version": "0.0.10.5",
+  "version": "1.0.2",
   "devDependencies": {
     "grunt": "0.3.17",
     "grunt-jasmine-runner": "latest"
