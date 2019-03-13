@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     s3_multipart (0.0.10.6)
-      aws-sdk (~> 2)
+      aws-sdk-s3 (~> 1.0.0)
       uuid (>= 2.3.6)
       xml-simple (>= 1.1.2)
 
@@ -39,14 +39,21 @@ GEM
     addressable (2.5.0)
       public_suffix (~> 2.0, >= 2.0.2)
     arel (3.0.3)
-    aws-sdk (2.6.32)
-      aws-sdk-resources (= 2.6.32)
-    aws-sdk-core (2.6.32)
+    aws-eventstream (1.0.2)
+    aws-partitions (1.144.0)
+    aws-sdk-core (3.46.2)
+      aws-eventstream (~> 1.0)
+      aws-partitions (~> 1.0)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.6.32)
-      aws-sdk-core (= 2.6.32)
-    aws-sigv4 (1.0.0)
+    aws-sdk-kms (1.13.0)
+      aws-sdk-core (~> 3, >= 3.39.0)
+      aws-sigv4 (~> 1.0)
+    aws-sdk-s3 (1.0.0)
+      aws-sdk-core (~> 3)
+      aws-sdk-kms (~> 1)
+      aws-sigv4 (~> 1.0)
+    aws-sigv4 (1.0.3)
     builder (3.0.4)
     capybara (2.11.0)
       addressable
@@ -88,7 +95,7 @@ GEM
     ffi (1.9.14)
     hike (1.2.3)
     i18n (0.6.1)
-    jmespath (1.3.1)
+    jmespath (1.4.0)
     journey (1.0.4)
     jquery-ui-rails (4.1.2)
       railties (>= 3.1.0)
@@ -166,7 +173,7 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.52)
-    uuid (2.3.8)
+    uuid (2.3.9)
       macaddr (~> 1.0)
     xml-simple (1.1.5)
     xpath (2.0.0)
@@ -191,4 +198,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   1.12.5
+   1.17.0
